@@ -3,6 +3,7 @@
 ### OpenCourseWare
 
 Course Website: https://cs50.harvard.edu/ai/
+
 Instructors: Brian Yu, David J. Malan
 
 ### Course Topics: 
