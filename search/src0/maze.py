@@ -23,9 +23,9 @@ class StackFrontier():
     def remove(self):
         if self.empty():
             raise Exception("empty frontier")
-        else:
-            node = self.frontier[-1]
-            self.frontier = self.frontier[:-1]
+        else: # remove last item, using last in first out strategy for exploring nodes
+            node = self.frontier[-1] 
+            self.frontier = self.frontier[:-1] # del record[-1]
             return node
 
 
@@ -35,8 +35,8 @@ class QueueFrontier(StackFrontier):
         if self.empty():
             raise Exception("empty frontier")
         else:
-            node = self.frontier[0]
-            self.frontier = self.frontier[1:]
+            node = self.frontier[0] # remove from front of the list
+            self.frontier = self.frontier[1:] 
             return node
 
 class Maze():
@@ -124,7 +124,8 @@ class Maze():
 
         # Initialize frontier to just the starting position
         start = Node(state=self.start, parent=None, action=None)
-        frontier = StackFrontier()
+        frontier = StackFrontier() # Depth first Search
+        # frontier = QueueFrontier() # Breadth First Search
         frontier.add(start)
 
         # Initialize an empty explored set
