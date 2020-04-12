@@ -1,0 +1,62 @@
+Search Problems
+
+agent
+state
+
+initial state: s
+action: ACTIONS(s) returns set of actions that can be executed in state s
+transition model: RESULT(s, a) returns the state resulting from performing action a in state s
+state space: the set of all states reachable from the initial state by any sequence of actions
+goal test: test if given state is goal
+path cost: is it shortest/cheapest/optimal path
+
+initial state 
+actions 
+transition model 
+goal test
+path cost function
+
+node: a data structure that keeps track of
+1. a state
+2. a parent (node that generated this node)
+3. an action (action applied to parent to get node) 
+4. a path cost (from initial state to node)
+
+Approach
+
+Sart with a frontier that contains the initial state. 
+Start with an empty explored set.
+Repeat:
+    If the frontier is empty, then no solution. 
+    Remove a node from the frontier.
+    If node contains goal state, return the solution. 
+    Add the node to the explored set.
+    Expand node, add resulting nodes to the frontier if they aren't already in the frontier or the explored set.
+
+Depth First Search (DFS)
+> Explores all posibilities
+> May take larger steps
+
+Breadth First Search (BFS) 
+> Finds an optimal path as it keeps jumping and goes step by step
+
+Frontier (Child Nodes)
+Explored (Nodes Explored)
+
+DFS & BFS are Uninformed Search
+
+___________________________________________
+
+Informed Search
+
+1) Greedy Best-First Search
+Exapnds nodes closest to the the goal, as estimated by a heuristic function h(n)
+
+2) A* Search
+Consider heuristic h(n) (distance) and the cost to reach node g(n) (steps)
+h(n) + g(n)
+
+___________________________________________
+TIC TAC TOE Example
+
+Minimax Algorithm 
