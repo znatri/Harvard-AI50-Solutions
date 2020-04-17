@@ -1,0 +1,28 @@
+1_Knowledge
+
+> knowledge-based agents
+use the knowledge to figure out a problem intelligently
+
+> Propositional Logics
+Propositional Symbols
+P, Q, R
+Logical Connectives
+not, and, or, implication, biconditional
+
+Model
+Knowledge Base (information AI knows to be true or False)
+
+Entailment
+if Alpha entails beta
+then if alpha is true then beta must therefore be true
+
+infrence
+
+Modus Ponens
+
+Theorem Proving
+
+initial state: starting knowledge base
+actions: inference rules
+transition model: new knowledge base after inference goal test: check statement we're trying to prove
+path cost function: number of steps in proof
