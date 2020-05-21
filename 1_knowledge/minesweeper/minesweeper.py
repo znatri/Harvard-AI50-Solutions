@@ -105,10 +105,8 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        #raise NotImplementedError
         if len(self.cells) == self.count:
-            if len(self.cells) != 0:
-                return self.cells
+            return self.cells
         
         return None
 
@@ -116,10 +114,8 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be safe.
         """
-        #raise NotImplementedError
-        if self.count == 0:
-            if len(self.cells) != 0:
-                return self.cells
+        if len(self.cells) != self.count:
+            return self.cells
         
         return None
 
@@ -128,7 +124,6 @@ class Sentence():
         Updates internal knowledge representation given the fact that
         a cell is known to be a mine.
         """
-        #raise NotImplementedError
         if cell in self.cells:
             self.cells.remove(cell)
             self.count -= 1
@@ -138,7 +133,6 @@ class Sentence():
         Updates internal knowledge representation given the fact that
         a cell is known to be safe.
         """
-        #raise NotImplementedError
         if cell in self.cells:
             self.cells.remove(cell)
 
