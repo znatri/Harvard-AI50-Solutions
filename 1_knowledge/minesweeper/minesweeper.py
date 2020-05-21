@@ -105,8 +105,11 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        if len(self.cells) == self.count: 
-            return self.cells
+        #raise NotImplementedError
+        if len(self.cells) == self.count:
+            if len(self.cells) != 0:
+                return self.cells
+        
         return None
 
     def known_safes(self):
@@ -135,6 +138,7 @@ class Sentence():
         Updates internal knowledge representation given the fact that
         a cell is known to be safe.
         """
+        #raise NotImplementedError
         if cell in self.cells:
             self.cells.remove(cell)
 
@@ -194,20 +198,21 @@ class MinesweeperAI():
         """
         # 1
         self.moves_made.add(cell)
+
         # 2
         self.mark_safe(cell)
+
         # 3
         neighbours = set()
-        for i in range(cell[0]-1, cell[0]+2):
-            for j in range(cell[1]-1, cell[1]+2):
+        for i in range(max(0, cell[0]-1), min(cell[0]+2, self.width)):
+            for j in range(max(0, cell[1]-1), min(cell[1]+2, self.height)):
                 if (i, j) != cell:
                     if (i, j) in self.mines:
                         count -= 1
-                    elif (i, j) in self.safes:
-                        pass
-                    else:
-                        neighbours.add((i, j)) 
+                    elif (i, j) not in self.safes:
+                        neighbours.add((i, j))
         self.knowledge.append(Sentence(neighbours, count))
+    
         # 4
         for sentence in self.knowledge:
             safes = sentence.known_safes()
@@ -247,8 +252,8 @@ class MinesweeperAI():
         for cell in self.safes:
             if cell not in self.moves_made:
                 return cell
+        
         return None
-
 
     def make_random_move(self):
         """
@@ -259,11 +264,9 @@ class MinesweeperAI():
         """
         for i in range(self.height):
             for j in range(self.width):
-                cell = (i, j)
-                if cell not in self.moves_made and cell not in self.mines:
-                    print("Making Random Move")
-                    return cell
+                if (i, j) not in self.moves_made and (i, j) not in self.mines:
+                    return (i, j)
+        
         return None
-
 
 
