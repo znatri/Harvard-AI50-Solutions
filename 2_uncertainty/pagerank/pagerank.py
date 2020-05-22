@@ -57,8 +57,28 @@ def transition_model(corpus, page, damping_factor):
     linked to by `page`. With probability `1 - damping_factor`, choose
     a link at random chosen from all pages in the corpus.
     """
-    raise NotImplementedError
-
+    # Holds probability of each state given current state
+    probabilityDistribution = {}
+    # Holds all possible states
+    domain = corpus.keys() 
+    # Domain range for current state (links from the active webpage)
+    domain_range = corpus.get(page) # page = current state
+    
+    for state in domain:
+        if domain_range == None:
+            probability = 1/len(domain)
+            probabilityDistribution[state] = round(probability, 4)
+        else:
+            if state not in domain_range:
+                probability = (1.00 - damping_factor)/len(domain)
+                probabilityDistribution[state] = round(probability, 4)
+            else:
+                probability = damping_factor/len(domain_range) + (1.00 - damping_factor)/len(domain)
+                probabilityDistribution[state] = round(probability, 4)
+        # print("Probability for " + state + " = " + str(float(probabilityDistribution.get(state)*100)) + "%.")
+    
+    return probabilityDistribution
+        
 
 def sample_pagerank(corpus, damping_factor, n):
     """
