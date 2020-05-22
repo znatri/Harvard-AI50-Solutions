@@ -1,0 +1,26 @@
+Probability:
+
+world: ⍵
+0 ≤ P(⍵) ≤ 1
+
+ ∑ P(⍵) = 1
+⍵→Ω
+ 
+Unconditional Probability:
+degree of belief in a proposition in the absence of any other evidence
+
+
+Conditional Probability:
+degree of belief in a proposition given some evidence is already revelaed to us
+
+P(a|b) : what is the probability of a given b is true
+
+Examples of conditional probability:
+P(rain today|rained yesterday)
+P(disease|test result)
+P(route change|traffic conditions)
+
+P(a|b) = P(a ^ b) / P(b)
+
+Bayesian Network
+

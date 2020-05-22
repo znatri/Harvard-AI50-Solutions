@@ -2,6 +2,7 @@ from model import model
 
 # Calculate predictions
 predictions = model.predict_proba({
+    # "rain": "heavy",
     "train": "delayed"
 })
 
