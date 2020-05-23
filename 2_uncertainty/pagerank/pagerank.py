@@ -15,10 +15,10 @@ def main():
     print(f"PageRank Results from Sampling (n = {SAMPLES})")
     for page in sorted(ranks):
         print(f"  {page}: {ranks[page]:.4f}")
-    ranks = iterate_pagerank(corpus, DAMPING)
-    print(f"PageRank Results from Iteration")
-    for page in sorted(ranks):
-        print(f"  {page}: {ranks[page]:.4f}")
+    # ranks = iterate_pagerank(corpus, DAMPING)
+    # print(f"PageRank Results from Iteration")
+    # for page in sorted(ranks):
+    #     print(f"  {page}: {ranks[page]:.4f}")
 
 
 def crawl(directory):
@@ -58,7 +58,7 @@ def transition_model(corpus, page, damping_factor):
     a link at random chosen from all pages in the corpus.
     """
     # Holds probability of each state given current state
-    probabilityDistribution = {}
+    probabilityDistribution = dict()
     # Holds all possible states
     domain = corpus.keys() 
     # Domain range for current state (links from the active webpage)
@@ -89,19 +89,41 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    distribution = {}
-    for page in corpus:
-        distribution[page] = 0
+    # distribution = {}
+    # for page in corpus:
+    #     distribution[page] = 0
     
-    page = random.choice(list(corpus.keys()))
+    # page = random.choice(list(corpus.keys()))
 
-    for i in range(1, n):
-        current_distribution = transition_model(corpus, page, damping_factor)
-        for page in distribution:
-            distribution[page] = ((i-1) * distribution[page] + current_distribution[page]) / i
+    # for i in range(1, n):
+    #     current_distribution = transition_model(corpus, page, damping_factor)
+    #     for page in distribution:
+    #         distribution[page] = ((i-1) * distribution[page] + current_distribution[page]) / i
         
-        page = random.choices(list(distribution.keys()), list(distribution.values()), k=1)[0]
-    return distribution
+    #     page = random.choices(list(distribution.keys()), list(distribution.values()), k=1)[0]
+    # return distribution
+
+    pagerank = dict()
+    random.seed()
+
+    for page in corpus:
+        pagerank[page] = 0
+
+    sample = random.choices(list(corpus.keys()), k=1)[0] # random.choices(population, weights, k) = list()
+    
+    for i in range(n):
+        model = transition_model(corpus, sample, damping_factor)
+        population, weights = zip(*model.items()) # zip(*model.items()) = zip(model.keys(), model.values())
+        sample = random.choices(population, weights=weights, k=1)[0]
+        pagerank[sample] += 1
+
+    for page in corpus:
+        pagerank[page] /= n
+    
+    return pagerank
+
+    
+
 
 def iterate_pagerank(corpus, damping_factor):
     """
