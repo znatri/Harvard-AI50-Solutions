@@ -2,6 +2,7 @@ import os
 import random
 import re
 import sys
+import math
 
 DAMPING = 0.85
 SAMPLES = 10000
@@ -15,10 +16,10 @@ def main():
     print(f"PageRank Results from Sampling (n = {SAMPLES})")
     for page in sorted(ranks):
         print(f"  {page}: {ranks[page]:.4f}")
-    # ranks = iterate_pagerank(corpus, DAMPING)
-    # print(f"PageRank Results from Iteration")
-    # for page in sorted(ranks):
-    #     print(f"  {page}: {ranks[page]:.4f}")
+    ranks = iterate_pagerank(corpus, DAMPING)
+    print(f"PageRank Results from Iteration")
+    for page in sorted(ranks):
+        print(f"  {page}: {ranks[page]:.4f}")
 
 
 def crawl(directory):
@@ -89,20 +90,6 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    # distribution = {}
-    # for page in corpus:
-    #     distribution[page] = 0
-    
-    # page = random.choice(list(corpus.keys()))
-
-    # for i in range(1, n):
-    #     current_distribution = transition_model(corpus, page, damping_factor)
-    #     for page in distribution:
-    #         distribution[page] = ((i-1) * distribution[page] + current_distribution[page]) / i
-        
-    #     page = random.choices(list(distribution.keys()), list(distribution.values()), k=1)[0]
-    # return distribution
-
     pagerank = dict()
     random.seed()
 
@@ -113,17 +100,14 @@ def sample_pagerank(corpus, damping_factor, n):
     
     for i in range(n):
         model = transition_model(corpus, sample, damping_factor)
+        pagerank[sample] += 1
         population, weights = zip(*model.items()) # zip(*model.items()) = zip(model.keys(), model.values())
         sample = random.choices(population, weights=weights, k=1)[0]
-        pagerank[sample] += 1
 
     for page in corpus:
         pagerank[page] /= n
     
     return pagerank
-
-    
-
 
 def iterate_pagerank(corpus, damping_factor):
     """
@@ -134,7 +118,40 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    pagerank = dict()
+    newrank = dict()
+
+    # Init equal page rank
+    for page in corpus:
+        pagerank[page] = 1/len(corpus)
+    
+    repeat = True
+
+    while repeat:
+        
+        for page in pagerank:
+            total = float(0)
+
+            for i in corpus:
+                if page in corpus[i]:
+                    total += pagerank[i]/len(corpus[i])
+                if not corpus[i]:
+                    total += pagerank[i] / len(corpus)
+
+            # pagerank[page] =  (1-damping_factor)/len(corpus) + (damping_factor * total)
+            newrank[page] = (1 - damping_factor) / len(corpus) + damping_factor * total
+
+        repeat = False
+
+        # If any of the values changes by more than the threshold, repeat process
+        for page in pagerank:
+            if not math.isclose(newrank[page], pagerank[page], abs_tol=0.001):
+                repeat = True
+            # Assign new values to current values
+            pagerank[page] = newrank[page]
+
+    return pagerank
+
 
 
 if __name__ == "__main__":
