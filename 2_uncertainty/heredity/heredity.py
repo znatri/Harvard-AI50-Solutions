@@ -139,8 +139,40 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `have_trait` has the trait, and
         * everyone not in set` have_trait` does not have the trait.
     """
-    raise NotImplementedError
+    
+    joint_probability = 0
 
+    for person in people:
+        genes = (
+            2 if person in two_genes else
+            1 if person in one_gene else
+            0
+        )
+        trait = person in have_trait
+        mother = person[person]["mother"]
+        father = person[person]["father"]
+
+        if mother is None and father is None:
+            joint_probability *= (PROBS["gene"][genes])
+        else:
+            passing_probability = {mother: 0, father: 0}
+            for parent in passing_probability:
+                passing_probability[parent] = (
+                    1 - PROBS["mutation"] if parent in two_genes else
+                    0.5 if parent in one_gene else
+                    PROBS["mutation"]
+                )
+
+            if genes == 2:
+                joint_probability *= (passing_probability[mother] * passing_probability[father])
+            elif genes == 1:
+                joint_probability *= (passing_probability[mother] * (1 - passing_probability[father])) + (passing_probability[father] * (1 - passing_probability[mother]))
+            else:
+                joint_probability *= (1 - passing_probability[mother]) * (1 - passing_probability[father])
+
+        joint_probability *= PROBS["trait"][genes][trait]
+
+    return joint_probability
 
 def update(probabilities, one_gene, two_genes, have_trait, p):
     """
@@ -149,8 +181,15 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     Which value for each distribution is updated depends on whether
     the person is in `have_gene` and `have_trait`, respectively.
     """
-    raise NotImplementedError
-
+    for person in probabilities:
+        genes = (
+            2 if person in two_genes else
+            1 if person in one_gene else
+            0
+        )
+        trait = person in have_trait
+        probabilities[person]["gene"][genes] += p
+        probabilities[person]["trait"][trait] += p
 
 def normalize(probabilities):
     """
