@@ -195,19 +195,10 @@ def normalize(probabilities):
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
     for person in probabilities:
-        genes = probabilities[person]["gene"]
-        k = sum(genes.values())
-        for gene in genes:
-            genes[gene] /= k
-        traits = probabilities[person]["trait"]
-        l = sum(traits.values())
-        for trait in traits:
-            traits[trait] /= l
-    # for person in probabilities:
-    #     for field in probabilities[person]:
-    #         total = sum(dict(probabilities[person][field]).values())
-    #         for value in probabilities[person][field]:
-    #             probabilities[person][field][value] /= total
-
+        for field in probabilities[person]:
+            total = sum(probabilities[person][field].values())
+            for value in probabilities[person][field]:
+                probabilities[person][field][value] /= total
+                
 if __name__ == "__main__":
     main()
