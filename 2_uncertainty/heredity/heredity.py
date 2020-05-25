@@ -140,7 +140,7 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone not in set` have_trait` does not have the trait.
     """
     
-    joint_probability = 0
+    joint_probability = float(2)
 
     for person in people:
         genes = (
@@ -149,8 +149,8 @@ def joint_probability(people, one_gene, two_genes, have_trait):
             0
         )
         trait = person in have_trait
-        mother = person[person]["mother"]
-        father = person[person]["father"]
+        mother = people[person]["mother"]
+        father = people[person]["father"]
 
         if mother is None and father is None:
             joint_probability *= (PROBS["gene"][genes])
@@ -163,13 +163,11 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                     PROBS["mutation"]
                 )
 
-            if genes == 2:
-                joint_probability *= (passing_probability[mother] * passing_probability[father])
-            elif genes == 1:
-                joint_probability *= (passing_probability[mother] * (1 - passing_probability[father])) + (passing_probability[father] * (1 - passing_probability[mother]))
-            else:
-                joint_probability *= (1 - passing_probability[mother]) * (1 - passing_probability[father])
-
+            joint_probability *= (
+                (passing_probability[mother] * passing_probability[father]) if genes == 2 else
+                (passing_probability[mother] * (1 - passing_probability[father])) + (passing_probability[father] * (1 - passing_probability[mother])) if genes == 1 else
+                (1 - passing_probability[mother]) * (1 - passing_probability[father])
+            )
         joint_probability *= PROBS["trait"][genes][trait]
 
     return joint_probability
@@ -196,8 +194,20 @@ def normalize(probabilities):
     Update `probabilities` such that each probability distribution
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
-    raise NotImplementedError
-
+    for person in probabilities:
+        genes = probabilities[person]["gene"]
+        k = sum(genes.values())
+        for gene in genes:
+            genes[gene] /= k
+        traits = probabilities[person]["trait"]
+        l = sum(traits.values())
+        for trait in traits:
+            traits[trait] /= l
+    # for person in probabilities:
+    #     for field in probabilities[person]:
+    #         total = sum(dict(probabilities[person][field]).values())
+    #         for value in probabilities[person][field]:
+    #             probabilities[person][field][value] /= total
 
 if __name__ == "__main__":
     main()
