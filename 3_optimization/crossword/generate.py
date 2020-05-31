@@ -100,9 +100,7 @@ class CrosswordCreator():
          constraints; in this case, the length of the word.)
         """
         for variable in self.domains:
-
-            for value in self.domains[variable]:
-
+            for value in set(self.domains[variable]):
                 if len(value) != variable.length:
                     self.domains[variable].remove(value)
 
@@ -119,13 +117,13 @@ class CrosswordCreator():
         
         i, j = self.crossword.overlaps[x, y]
 
-        for word_x in self.domains[x]:
-
+        for word_x in set(self.domains[x]):
+            revision = True
             for word_y in self.domains[y]:
-
-                if word_x[i] != word_y[j]:
-                    self.domains[x].remove(word_x)
-                    revision = True
+                if word_x[i] == word_y[j]:   
+                    revision = False
+            if revision:
+                self.domains[x].remove(word_x)
         
         return revision
 
@@ -139,22 +137,19 @@ class CrosswordCreator():
         return False if one or more domains end up empty.
         """
         if arcs is None:
-
-            arcs = set()
-
+            arcs = list()
             for x in self.domains:
                 for y in self.crossword.neighbors(x):
-                    arcs.add((x, y))
+                    arcs.append((x, y))
         
-        while arcs is not None:
-            (x, y) = arcs.pop()
-            if self.revise(x, y):
-                if self.domains[x] is None or self.domains[y] is None:
-                    return False
-                for z in self.crossword.neighbors(x):
-                    if z != y:
-                        arcs.add((z, x))
-                
+        x, y = arcs.pop()
+        if self.revise(x, y):
+            if self.domains[x] is None or self.domains[y] is None:
+                return False
+            for z in self.crossword.neighbors(x):
+                if z != y:
+                    arcs.append((z, x))
+            
         return True
                         
 
@@ -201,15 +196,16 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
-        order = list(self.domains(var).copy())
+        order = list()
         ranking_heuristic = {}
 
         for value in self.domains[var]:
             n = 0
-            for neighbour in self.crossword.neighbors(var) - assignment:
+            for neighbour in self.crossword.neighbors(var) - set(assignment):
                 if value in self.domains[neighbour]:
                     n += 1
             ranking_heuristic[value] = n
+            order.append(value)
 
         order.sort(key=ranking_heuristic.get)
 
@@ -225,9 +221,8 @@ class CrosswordCreator():
         """
         current = None
 
-        for var in self.domains:
+        for var in self.domains.keys():
             if var not in assignment:
-
                 if current is None:
                     current = var
 
@@ -248,8 +243,19 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        raise NotImplementedError
+        if self.assignment_complete(assignment):
+            return assignment
 
+        var = self.select_unassigned_variable(assignment)
+
+        for value in self.order_domain_values(var, assignment):
+            assignment[var] = value
+            if self.consistent(assignment):
+                result = self.backtrack(assignment)
+                if result is not None:
+                    return result
+            assignment.pop(var)
+        return None
 
 def main():
 
