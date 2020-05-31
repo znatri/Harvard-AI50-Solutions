@@ -100,7 +100,9 @@ class CrosswordCreator():
          constraints; in this case, the length of the word.)
         """
         for variable in self.domains:
+
             for value in self.domains[variable]:
+
                 if len(value) != variable.length:
                     self.domains[variable].remove(value)
 
@@ -118,7 +120,9 @@ class CrosswordCreator():
         i, j = self.crossword.overlaps[x, y]
 
         for word_x in self.domains[x]:
+
             for word_y in self.domains[y]:
+
                 if word_x[i] != word_y[j]:
                     self.domains[x].remove(word_x)
                     revision = True
@@ -135,7 +139,9 @@ class CrosswordCreator():
         return False if one or more domains end up empty.
         """
         if arcs is None:
+
             arcs = set()
+
             for x in self.domains:
                 for y in self.crossword.neighbors(x):
                     arcs.add((x, y))
@@ -158,8 +164,10 @@ class CrosswordCreator():
         crossword variable); return False otherwise.
         """
         complete = False
-        if len(assignment.keys()) == len(self.domains)):
+
+        if len(assignment.keys()) == len(self.domains):
             complete = True
+        
         return complete
 
     def consistent(self, assignment):
@@ -168,9 +176,10 @@ class CrosswordCreator():
         puzzle without conflicting characters); return False otherwise.
         """
         used_words = set()
+
         for var in assignment:
             word = assignment[var]
-            if val not in used_words:
+            if word not in used_words:
                 used_words.add(word)
             else:
                 return False
@@ -192,7 +201,19 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
-        raise NotImplementedError
+        order = list(self.domains(var).copy())
+        ranking_heuristic = {}
+
+        for value in self.domains[var]:
+            n = 0
+            for neighbour in self.crossword.neighbors(var) - assignment:
+                if value in self.domains[neighbour]:
+                    n += 1
+            ranking_heuristic[value] = n
+
+        order.sort(key=ranking_heuristic.get)
+
+        return order
 
     def select_unassigned_variable(self, assignment):
         """
