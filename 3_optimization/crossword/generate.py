@@ -115,7 +115,7 @@ class CrosswordCreator():
         """
         revision = False
         
-        i, j = self.crossword.overlaps
+        i, j = self.crossword.overlaps[x, y]
 
         for word_x in self.domains[x]:
             for word_y in self.domains[y]:
@@ -167,7 +167,23 @@ class CrosswordCreator():
         Return True if `assignment` is consistent (i.e., words fit in crossword
         puzzle without conflicting characters); return False otherwise.
         """
-        raise NotImplementedError
+        used_words = set()
+        for var in assignment:
+            word = assignment[var]
+            if val not in used_words:
+                used_words.add(word)
+            else:
+                return False
+            
+            if len(word) != var.length:
+                return False
+            
+            for neighbour in self.crossword.neighbors(var):
+                if neighbour in assignment:
+                    (i, j) = self.crossword.overlaps[var, neighbour]
+                    if word[i] != assignment[neighbour][j]:
+                        return False 
+        return True 
 
     def order_domain_values(self, var, assignment):
         """
