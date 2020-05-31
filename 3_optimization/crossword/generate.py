@@ -158,7 +158,7 @@ class CrosswordCreator():
         crossword variable); return False otherwise.
         """
         complete = False
-        if len(assignment.keys()) == len(self.domains) and len(assignment.keys()) == len(assignment.values()):
+        if len(assignment.keys()) == len(self.domains)):
             complete = True
         return complete
 
