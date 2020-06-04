@@ -69,7 +69,7 @@ def load_data(filename):
         reader = csv.DictReader(f)
         next(reader)
         for row in reader:
-            evidence.append(
+            evidence.append([
                 int(row["Administrative"]),
                 float(row["Administrative_Duration"]),
                 int(row["Informational"]),
@@ -87,9 +87,9 @@ def load_data(filename):
                 int(row["TrafficType"]),
                 0 if row["VisitorType"] != 'Returning_Visitor' else 1, 
                 1 if row["Weekend"] == 'TRUE' else 0
-             ) # Evidence
+            ]) # Evidence
 
-            label.append(1 if row[17] == 'TRUE' else 0) # Label
+            label.append(1 if row["Revenue"] == 'TRUE' else 0) # Label
             
     return (evidence, label)
 
