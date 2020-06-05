@@ -103,7 +103,6 @@ def train_model(evidence, labels):
     model.fit(evidence, labels)
     return model
 
-
 def evaluate(labels, predictions):
     """
     Given a list of actual labels and a list of predicted labels,
@@ -119,6 +118,27 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
+    sensitivity = float(0) # true positive rate
+    specificity = float(0) # true negative rate
+    total_pos = float(0)
+    total_neg = float(0)
+
+    for label, prediction in zip(labels, predictions):
+
+        if label != 0:
+            total_pos += 1
+            if label == prediction:
+                sensitivity += 1
+
+        else:
+            total_neg += 1
+            if label == prediction:
+                specificity += 1
+    
+    sensitivity /= total_pos
+    specificity /= total_neg
+
+    return sensitivity, specificity
     
 
 
