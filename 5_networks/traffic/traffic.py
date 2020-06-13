@@ -70,7 +70,7 @@ def load_data(data_dir):
         # If element is a directory
         if os.path.isdir(folder_path):
             # Get an image
-            print(f"Loading images from {folder_path}")
+            print(f"Loading images from {element}")
             for img in os.listdir(folder_path):
 
                 # Loading image
@@ -108,6 +108,7 @@ def get_model():
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
 
+    raise NotImplementedError
 
 
 if __name__ == "__main__":
