@@ -70,11 +70,12 @@ def load_data(data_dir):
         # If element is a directory
         if os.path.isdir(folder_path):
             # Get an image
+            printf(f"Loading images from {folder_path}")
             for img in os.listdir(folder_path):
 
                 # Loading image
                 img_path = os.path.join(folder_path, img)
-                image = cv2.imread(img_path)
+                image = cv2.imread(img_path, cv2.IMREAD_COLOR)
 
                 # Resizing image
 
