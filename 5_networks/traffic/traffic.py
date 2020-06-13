@@ -70,7 +70,7 @@ def load_data(data_dir):
         # If element is a directory
         if os.path.isdir(folder_path):
             # Get an image
-            printf(f"Loading images from {folder_path}")
+            print(f"Loading images from {folder_path}")
             for img in os.listdir(folder_path):
 
                 # Loading image
@@ -107,7 +107,7 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
-    raise NotImplementedError
+
 
 
 if __name__ == "__main__":
