@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 EPOCHS = 10
 IMG_WIDTH = 30
 IMG_HEIGHT = 30
-NUM_CATEGORIES = 3
+NUM_CATEGORIES = 43
 TEST_SIZE = 0.4
 
 
@@ -70,7 +70,6 @@ def load_data(data_dir):
         # If element is a directory
         if os.path.isdir(folder_path):
             # Get an image
-            print(f"Loading images from {element}")
             for img in os.listdir(folder_path):
 
                 # Loading image
@@ -108,7 +107,44 @@ def get_model():
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
 
-    raise NotImplementedError
+    model = tf.keras.Sequential([
+        # Convolutional layer. Learn 18 filters using a 3x3 kernel 
+        tf.keras.layers.Conv2D(
+            32, (3, 3), activation = "relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
+        ),
+        
+        # Max-pooling layer, using 3 x 3 matrix
+        tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
+
+        # Convolutional layer. Learn 18 filters using a 3x3 kernel 
+        tf.keras.layers.Conv2D(
+            32, (3, 3), activation = "relu"
+        ),
+
+        # Max-pooling layer, using 2 x 2 matrix 
+        tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
+
+        # Flatten units
+        tf.keras.layers.Flatten(),
+
+        # Adding a hidden layer
+        tf.keras.layers.Dense(128, activation="relu"),
+        
+        # Dropout randomly
+        tf.keras.layers.Dropout(0.3),
+
+        # Add output layers 
+        tf.keras.layers.Dense(NUM_CATEGORIES, activation="softmax")
+
+    ])
+
+    model.compile(
+    optimizer="adam",
+    loss="categorical_crossentropy",
+    metrics=["accuracy"]
+    )
+
+    return model
 
 
 if __name__ == "__main__":
