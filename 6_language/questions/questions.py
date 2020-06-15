@@ -1,5 +1,6 @@
 import nltk
 import sys
+import os
 
 FILE_MATCHES = 1
 SENTENCE_MATCHES = 1
@@ -48,8 +49,13 @@ def load_files(directory):
     Given a directory name, return a dictionary mapping the filename of each
     `.txt` file inside that directory to the file's contents as a string.
     """
-    raise NotImplementedError
-
+    files = dict()
+    for file in os.listdir(directory):
+        path = os.path.join(directory, file)
+        if os.path.isfile(path):
+            f = open(path)
+            files[file] = f.read()
+    return files
 
 def tokenize(document):
     """
