@@ -84,8 +84,8 @@ def compute_idfs(documents):
     resulting dictionary.
     """
     file_idfs = dict()
-    total_docs = len(documents.keys())
     
+    # Count the no. of files the word appears in
     for words in documents.values():
         for word in words:
             if word not in file_idfs:
@@ -93,8 +93,10 @@ def compute_idfs(documents):
             else: 
                 file_idfs[word] += 1
     
-    for word, val in file_idfs.items():
-        file_idfs[word] = math.log(total_docs/val) 
+    # Calculate the IDFs of the word based on frequency
+    tot_docs = len(documents.keys())
+    for word, num_docs in file_idfs.items():
+        file_idfs[word] = math.log(tot_docs/num_docs) 
     
     return file_idfs
 
