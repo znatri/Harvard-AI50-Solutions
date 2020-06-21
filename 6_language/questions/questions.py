@@ -122,9 +122,8 @@ def top_files(query, files, idfs, n):
 
     tf_idf.sort(key=idfs_ranking.get)
 
-    for i in range(n):
-        if len(tf_idf) != n:
-            tf_idf.pop()
+    while len(tf_idf) != n:
+        tf_idf.pop()
 
     return tf_idf
 
