@@ -108,7 +108,7 @@ def top_files(query, files, idfs, n):
     to their IDF values), return a list of the filenames of the the `n` top
     files that match the query, ranked according to tf-idf.
     """
-    tf_idf = list()
+    top_files = list()
     idfs_ranking = dict()
 
     for file in files:
@@ -116,16 +116,16 @@ def top_files(query, files, idfs, n):
         for word in query:
             if word in files[file]:
                 val += idfs[word]
-                if files[file] not in tf_idf:
-                    tf_idf.append(file)
+                if files[file] not in top_files:
+                    top_files.append(file)
         idfs_ranking[file] = val
 
-    tf_idf.sort(key=idfs_ranking.get)
+    top_files.sort(key=idfs_ranking.get)
 
-    while len(tf_idf) != n:
-        tf_idf.pop()
+    while len(top_files) != n:
+        top_files.pop()
 
-    return tf_idf
+    return top_files
 
 def top_sentences(query, sentences, idfs, n):
     """
@@ -135,7 +135,26 @@ def top_sentences(query, sentences, idfs, n):
     the query, ranked according to idf. If there are ties, preference should
     be given to sentences that have a higher query term density.
     """
-    raise NotImplementedError
+    top_sentences = list()
+    rank = dict()
+
+    for sentence in sentences:
+        idf = float(0)
+        term_fq = 0
+        for word in query:
+             if word in sentences[sentence]:
+                term_fq += 1
+                idf += idfs[word]
+                if sentences[sentence] not in top_sentences:
+                    top_sentences.append(sentence)
+        rank[sentence] = (idf, term_fq/len(sentences[sentence]))
+        
+    top_sentences.sort(key=rank.get)
+
+    while len(top_sentences) != n:
+        top_sentences.pop()
+
+    return top_sentences
 
 
 if __name__ == "__main__":
